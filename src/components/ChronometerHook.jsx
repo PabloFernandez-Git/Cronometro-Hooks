@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { generate as id } from 'shortid'
 import styled from 'styled-components'
 
@@ -31,15 +31,20 @@ const Chronometer = () => {
     const [allTimestamps, setAllTimestamps] = useState([])
     const [started, setStarted] = useState(false)
 
-    let interval
+
+    useEffect(() => {
+        if(running) {
+            const interval = setInterval( () => {
+                tick()
+            }, 100)
+            return () => clearInterval(interval)
+        }
+    }, [running, clock]);
 
     //Función que se llama con el boton start
     const handleStartClick = () => {
         if (!running) {
-            interval = setInterval(() => {
-                tick()
-            }, 100)
-
+            
             setRunning(true)
             setStarted(true)
         }
@@ -70,30 +75,35 @@ const Chronometer = () => {
 
     //Función que se llama con el boton stop
     const handleStopClick = () => {
-        if (this.state.running) {
-            clearInterval(this.interval)
-            this.setState({ running: false })
+        if (running) {
+            
+            setRunning(false)
         }
     }
 
     //Función que se llama con el boton timestamp
     const handleTimestamp = () => {
-        const { hours, minutes, seconds, miliseconds, allTimestamps } = this.state
+        
+        const timestamp = { 
+            hours: clock.hours, 
+            minutes: clock.minutes, 
+            seconds: clock.seconds, 
+            miliseconds: clock.miliseconds 
+        }
 
-        const timestamp = { hours, minutes, seconds, miliseconds }
-
-        const timestamps = allTimestamps
-
-        timestamps.push(timestamp)
-
-        this.setState({ allTimestamps: timestamps })
+        
+        setAllTimestamps([
+            ...allTimestamps,
+            timestamp
+        ])
 
     }
 
     //Función que se llama con el boton reset
     const handleReset = () => {
-        this.updateTimer(0, 0, 0, 0)
-        this.setState({ allTimestamps: [], started: false })
+        updateTimer(0, 0, 0, 0)
+        setAllTimestamps([])
+        setStarted(false)
     }
 
     //Función de actualización del estado
