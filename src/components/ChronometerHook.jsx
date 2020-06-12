@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
-
+import React, { useState } from 'react';
 import { generate as id } from 'shortid'
-
 import styled from 'styled-components'
+
 
 const Button = styled.button`
     background-color: ${({ disabled }) => disabled ? 'transparent' : '#387EF5'};
@@ -19,17 +18,19 @@ const List = styled.ul`
     padding-left:0;
 `
 
-class Chronometer extends Component {
+const Chronometer = () => {
 
-    state = {
+    const [clock, setClock] = useState({
         hours: 0,
         minutes: 0,
         seconds: 0,
         miliseconds: 0,
-        running: false,
-        allTimestamps: [],
-        started: false
-    }
+    })
+
+    const[running, setRunning] = useState(false)
+    const[allTimestamps, setAllTimestamps] = useState([])
+    const[started, setStarted] = useState(false)
+
 
     //Función que se llama con el boton start
     handleStartClick = () => {

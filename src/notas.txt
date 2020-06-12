@@ -1,0 +1,15 @@
+Migrando cronómetro a hooks
+
+El objetivo del ejercicio es aprender a migrar un archivo con clases a hooks.
+
+
+Desarrollo:
+
+1. Creando el estado con useState
+Los 'styled-components' no necesitan ningun tipo de modificacion.
+Construccion de las variables de estado a traves de 'useState'.
+
+
+
+
+
