@@ -10,6 +10,7 @@ Los 'styled-components' no necesitan ningun tipo de modificacion.
 Construccion de las variables de estado a traves de 'useState'.
 
 
+2. Adaptando funciones y jsx
 
 
 

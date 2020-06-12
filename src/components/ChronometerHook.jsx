@@ -27,28 +27,28 @@ const Chronometer = () => {
         miliseconds: 0,
     })
 
-    const[running, setRunning] = useState(false)
-    const[allTimestamps, setAllTimestamps] = useState([])
-    const[started, setStarted] = useState(false)
+    const [running, setRunning] = useState(false)
+    const [allTimestamps, setAllTimestamps] = useState([])
+    const [started, setStarted] = useState(false)
 
+    let interval
 
     //Función que se llama con el boton start
-    handleStartClick = () => {
-        if (!this.state.running) {
-            this.interval = setInterval(() => {
-                this.tick()
+    const handleStartClick = () => {
+        if (!running) {
+            interval = setInterval(() => {
+                tick()
             }, 100)
 
-            this.setState({ running: true, started: true })
+            setRunning(true)
+            setStarted(true)
         }
     }
 
     //Conteo del cronómetro
-    tick() {
-        let hours = this.state.hours
-        let minutes = this.state.minutes
-        let seconds = this.state.seconds
-        let miliseconds = this.state.miliseconds + 1
+    const tick = () => {
+        let { hours, minutes, seconds, miliseconds } = clock
+        miliseconds = miliseconds + 1
 
         if (miliseconds === 10) {
             miliseconds = 0
@@ -65,11 +65,11 @@ const Chronometer = () => {
             hours = hours + 1
         }
 
-        this.updateTimer(hours, minutes, seconds, miliseconds)
+        updateTimer(hours, minutes, seconds, miliseconds)
     }
 
     //Función que se llama con el boton stop
-    handleStopClick = () => {
+    const handleStopClick = () => {
         if (this.state.running) {
             clearInterval(this.interval)
             this.setState({ running: false })
@@ -77,7 +77,7 @@ const Chronometer = () => {
     }
 
     //Función que se llama con el boton timestamp
-    handleTimestamp = () => {
+    const handleTimestamp = () => {
         const { hours, minutes, seconds, miliseconds, allTimestamps } = this.state
 
         const timestamp = { hours, minutes, seconds, miliseconds }
@@ -91,53 +91,51 @@ const Chronometer = () => {
     }
 
     //Función que se llama con el boton reset
-    handleReset = () => {
+    const handleReset = () => {
         this.updateTimer(0, 0, 0, 0)
         this.setState({ allTimestamps: [], started: false })
     }
 
     //Función de actualización del estado
-    updateTimer(hours, minutes, seconds, miliseconds) {
-        this.setState({
-            hours, minutes, seconds, miliseconds
-        })
+    const updateTimer = (hours, minutes, seconds, miliseconds) => {
+        setClock({ hours, minutes, seconds, miliseconds })
     }
 
-    addZero(value) {
-        return value < 10 ? `0${value}` : value
-    }
+    const addZero = (value) => (
+        value < 10 ? `0${value}` : value
+    )
 
-    render() {
-        let { hours, minutes, seconds, miliseconds, running, allTimestamps } = this.state
-        hours = this.addZero(hours)
-        minutes = this.addZero(minutes)
-        seconds = this.addZero(seconds)
-        miliseconds = this.addZero(miliseconds)
-        return (
-            <>
-                <h3>{`${hours} : ${minutes} : ${seconds} : ${miliseconds}`}</h3>
-                <Button disabled={running} onClick={this.handleStartClick}> START </Button>
-                <Button disabled={!running} onClick={this.handleStopClick}> STOP </Button>
-                <Button disabled={!running} onClick={this.handleTimestamp}> TIMESTAMP </Button>
-                {this.state.started && <Button disabled={running} onClick={this.handleReset}> RESET </Button>}
 
-                <List>
-                    {allTimestamps.map((timestamp, idx) => (
-                        <li key={id()}>
-                            {`
+    let { hours, minutes, seconds, miliseconds } = clock
+    hours = addZero(hours)
+    minutes = addZero(minutes)
+    seconds = addZero(seconds)
+    miliseconds = addZero(miliseconds)
+    return (
+        <>
+            <h3>{`${hours} : ${minutes} : ${seconds} : ${miliseconds}`}</h3>
+            <Button disabled={running} onClick={handleStartClick}> START </Button>
+            <Button disabled={!running} onClick={handleStopClick}> STOP </Button>
+            <Button disabled={!running} onClick={handleTimestamp}> TIMESTAMP </Button>
+            {started && <Button disabled={running} onClick={handleReset}> RESET </Button>}
+
+            <List>
+                {allTimestamps.map((timestamp, idx) => (
+                    <li key={id()}>
+                        {`
                                 ${idx + 1} -
-                                ${this.addZero(timestamp.hours)} :
-                                ${this.addZero(timestamp.minutes)} :
-                                ${this.addZero(timestamp.seconds)} :
-                                ${this.addZero(timestamp.miliseconds)}
+                                ${addZero(timestamp.hours)} :
+                                ${addZero(timestamp.minutes)} :
+                                ${addZero(timestamp.seconds)} :
+                                ${addZero(timestamp.miliseconds)}
                             `}
-                        </li>
-                    ))}
+                    </li>
+                ))}
 
-                </List>
-            </>
-        )
-    }
+            </List>
+        </>
+    )
+
 }
 
 export default Chronometer;
